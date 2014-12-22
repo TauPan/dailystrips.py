@@ -1,4 +1,5 @@
 dailystrips.py
 ==============
 
-A port of dailystrips to python, aiming for an easier maintainable configuration (via lxml)
+A reimplementation of dailystrips in python, aiming for an easier
+maintainable configuration (via lxml)
