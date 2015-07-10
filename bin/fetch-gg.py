@@ -12,6 +12,7 @@ import re
 GGDATEPAGE = 'http://www.girlgeniusonline.com/comic.php?date='
 
 
+# I only tested this from 20131028 on
 def main(argv):
     startdate = argv[1]
     starturl = "{}{}".format(
@@ -22,7 +23,10 @@ def main(argv):
     lastdate = re.search("([0-9]{8})$", lastpage).group(1)
     date = startdate
     page = startpage
-    while (date <= lastdate):
+    while (date <= lastdate):  # FIXME: fix loop condition, this will
+                               # never work, because there's no link
+                               # on the last page
+        # FIXME: Something will fail (404) with an ad on the 20150521 page
         imageurl = page.xpath(
             "/html/body/div[@id='wrapper']"
             "/div[@id='comicarea']/"
