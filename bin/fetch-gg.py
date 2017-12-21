@@ -14,6 +14,8 @@ GGDATEPAGE = 'http://www.girlgeniusonline.com/comic.php?date='
 
 # I only tested this from 20131028 on
 def main(argv):
+    # TODO: factor out common code, as soon as I have more fetcher
+    # examples
     startdate = argv[1]
     starturl = "{}{}".format(
         GGDATEPAGE,
@@ -23,9 +25,10 @@ def main(argv):
     lastdate = re.search("([0-9]{8})$", lastpage).group(1)
     date = startdate
     page = startpage
-    while (date <= lastdate):  # FIXME: fix loop condition, this will
-                               # never work, because there's no link
-                               # on the last page
+    # FIXME: fix loop condition, this will never work, because there's
+    # no link on the last page, correct would be check if there's a
+    # link to the next page
+    while (date <= lastdate):
         # FIXME: Something will fail (404) with an ad on the 20150521 page
         imageurl = page.xpath(
             "/html/body/div[@id='wrapper']"
