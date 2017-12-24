@@ -33,6 +33,15 @@ def test_scrape_day():
     ret = fddb.scrape_day(page, date)
     assert ret['date'] == date
     assert ret['total']['kcal'] == 1747
+    assert ret['total']['fat'] == 51.6
+    assert ret['total']['carbs'] == 189.5
+    assert ret['total']['sugar'] == 72.3
+    assert ret['total']['protein'] == 95.2
+    assert ret['total']['alcohol'] == 12.2
+    assert ret['total']['water'] == 1
+    assert ret['total']['fibre'] == 31.3
+    assert ret['total']['cholesterol'] == 58
+    assert ret['total']['BE'] == 15.8
     food0 = ret['foods'][0]
     assert food0['time'] == datetime.datetime(2017, 6, 2, 23, 30)
     assert food0['food']['link'] == 'http://fddb.info/db/de/lebensmittel/brauerei_beck_becks_bier_pils/index.html'
