@@ -14,9 +14,6 @@ import dateutil.parser
 import lxml.html
 
 
-FDDBDATEPAGE = 'http://fddb.info/db/i18n/myday20/?lang=de&q={end}&p={start}'
-
-
 def main(argv):
     session = login()
     startdate = dateutil.parser.parse(argv[1])
@@ -25,26 +22,57 @@ def main(argv):
     days = []
     with login() as session:
         while (date <= lastdate):
-            nextdate = date + datetime.timedelta(days=1)
-            start = int(date.timestamp())
-            end = int(nextdate.timestamp())
-            url = FDDBDATEPAGE.format(
-                start=start,
-                end=end)
-            content = session.get(url).content
-            page = lxml.html.document_fromstring(content)
-            calorific = ''.join(page.xpath('//td[span/b="Brennwert"]/following-sibling::td//text()'))
-            kcal_total = int(re.search('(\d+) kcal', calorific).group(1))
-            foods = scrape_foods(page, date)
-            day = dict(
-                date=date,
-                kcal=kcal_total,
-                foods=foods)
+            page = page_for_date(date, session)
+            day = scrape_day(page, date)
             days.append(day)
-            date = nextdate
+            date = next_day(date)
         import pdb; pdb.set_trace()
         pass
 
+
+@contextmanager
+def login():
+    loginpage = 'https://fddb.info/db/i18n/account/?lang=de&action=login'
+    user_pass = {}
+    with open(os.path.expanduser('~/secret/login-fddb.json')) as f:
+        user_pass = json.load(f);
+    with requests.Session() as session:
+        session.post(loginpage,
+                     {
+                         'loginemailorusername': user_pass['user'],
+                         'loginpassword': user_pass['password']
+                     });
+        yield session
+
+
+def page_for_date(date, session):
+    url = url_for_day(date)
+    content = session.get(url).content
+    page = lxml.html.document_fromstring(content)
+    return page
+
+
+def url_for_day(date):
+    fddb_date_page_format = 'http://fddb.info/db/i18n/myday20/?lang=de&q={end}&p={start}'
+    nextdate = next_day(date)
+    start = int(date.timestamp())
+    end = int(nextdate.timestamp())
+    url = fddb_date_page_format.format(start=start, end=end)
+    return url
+
+
+def scrape_day(page, date):
+    calorific = ''.join(page.xpath('//td[span/b="Brennwert"]/following-sibling::td//text()'))
+    kcal_total = int(re.search('(\d+) kcal', calorific).group(1))
+    foods = scrape_foods(page, date)
+    day = dict(
+        date=date,
+        kcal=kcal_total,
+        foods=foods)
+    return day
+
+def next_day(date):
+    return date + datetime.timedelta(days=1)
 
 def scrape_foods(page, date):
     food_rows = page.xpath('//table[@class="myday-table-std"]//tr')
@@ -71,20 +99,6 @@ def scrape_foods(page, date):
             protein=protein))
     return foods
 
-
-@contextmanager
-def login():
-    loginpage = 'https://fddb.info/db/i18n/account/?lang=de&action=login'
-    user_pass = {}
-    with open(os.path.expanduser('~/secret/login-fddb.json')) as f:
-        user_pass = json.load(f);
-    with requests.Session() as session:
-        session.post(loginpage,
-                     {
-                         'loginemailorusername': user_pass['user'],
-                         'loginpassword': user_pass['password']
-                     });
-        yield session
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
