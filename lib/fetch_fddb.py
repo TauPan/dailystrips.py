@@ -26,8 +26,6 @@ def main(argv):
             day = scrape_day(page, date)
             days.append(day)
             date = next_day(date)
-        import pdb; pdb.set_trace()
-        pass
 
 
 @contextmanager
@@ -71,8 +69,17 @@ def scrape_day(page, date):
 
 
 def scrape_total(page):
-    calorific = ''.join(page.xpath('//td[span/b="Brennwert"]/following-sibling::td//text()'))
-    return {'kcal': parse_kcal(calorific)}
+    table = page.xpath('//p[@id="fddb-myday-printinfo"]/following-sibling::table[1]')[0]
+    return {'kcal': parse_kcal(table.xpath('.//tr[1]/td[2]/text()')[0]),
+            'fat': parse_g(table.xpath('.//tr[2]/td[2]//text()')[0]),
+            'carbs': parse_g(table.xpath('.//tr[3]/td[2]//text()')[0]),
+            'sugar': parse_g(table.xpath('.//tr[4]/td[2]//text()')[0]),
+            'protein': parse_g(table.xpath('.//tr[5]/td[2]//text()')[0]),
+            'alcohol': parse_g(table.xpath('.//tr[6]/td[2]//text()')[0]),
+            'water': parse_liters(table.xpath('.//tr[7]/td[2]//text()')[0]),
+            'fibre': parse_g(table.xpath('.//tr[8]/td[2]//text()')[0]),
+            'cholesterol': parse_mg(table.xpath('.//tr[9]/td[2]//text()')[0]),
+            'BE': parse_german_float(table.xpath('.//tr[10]/td[2]//text()')[0])}
 
 
 def next_day(date):
@@ -109,7 +116,19 @@ def parse_kcal(text):
 
 
 def parse_g(text):
-    return float((re.search('([\d,]+) g', text).group(1)).translate(str.maketrans(',', '.')))
+    return parse_german_float(re.search('([\d,]+) g', text).group(1))
+
+
+def parse_mg(text):
+    return parse_german_float(re.search('([\d,]+) mg', text).group(1))
+
+
+def parse_liters(text):
+    return parse_german_float(re.search('([\d,]+) Liter', text).group(1))
+
+
+def parse_german_float(text):
+    return float(text.translate(str.maketrans(',', '.')))
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
