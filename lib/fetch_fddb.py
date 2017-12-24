@@ -63,13 +63,14 @@ def url_for_day(date):
 
 def scrape_day(page, date):
     calorific = ''.join(page.xpath('//td[span/b="Brennwert"]/following-sibling::td//text()'))
-    kcal_total = int(re.search('(\d+) kcal', calorific).group(1))
+    kcal_total = parse_kcal(calorific)
     foods = scrape_foods(page, date)
     day = dict(
         date=date,
         kcal=kcal_total,
         foods=foods)
     return day
+
 
 def next_day(date):
     return date + datetime.timedelta(days=1)
@@ -85,10 +86,10 @@ def scrape_foods(page, date):
         food = row.xpath('td[1]/a')[0]
         food_link = food.attrib['href']
         food_txt = food.text
-        kcal = int(re.search('(\d+) kcal', row.xpath('td[3]//text()')[0]).group(1))
-        fat = float((re.search('([\d,]+) g', row.xpath('td[4]//text()')[0]).group(1)).translate(str.maketrans(',', '.')))
-        carbs = float((re.search('([\d,]+) g', row.xpath('td[5]//text()')[0]).group(1)).translate(str.maketrans(',', '.')))
-        protein = float((re.search('([\d,]+) g', row.xpath('td[6]//text()')[0]).group(1)).translate(str.maketrans(',', '.')))
+        kcal = parse_kcal(row.xpath('td[3]//text()')[0])
+        fat = parse_g(row.xpath('td[4]//text()')[0])
+        carbs = parse_g(row.xpath('td[5]//text()')[0])
+        protein = parse_g(row.xpath('td[6]//text()')[0])
         foods.append(dict(
             time=time,
             food=dict(link=food_link,
@@ -99,6 +100,13 @@ def scrape_foods(page, date):
             protein=protein))
     return foods
 
+
+def parse_kcal(text):
+    return int(re.search('(\d+) kcal', text).group(1))
+
+
+def parse_g(text):
+    return float((re.search('([\d,]+) g', text).group(1)).translate(str.maketrans(',', '.')))
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
