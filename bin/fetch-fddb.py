@@ -25,8 +25,8 @@ def main(argv):
     days = []
     with login() as session:
         while (date <= lastdate):
-            start = int(date.timestamp())
             nextdate = date + datetime.timedelta(days=1)
+            start = int(date.timestamp())
             end = int(nextdate.timestamp())
             url = FDDBDATEPAGE.format(
                 start=start,
