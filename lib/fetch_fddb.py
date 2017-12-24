@@ -70,7 +70,10 @@ def scrape_day(page, date):
 
 def scrape_total(page):
     table = page.xpath('//p[@id="fddb-myday-printinfo"]/following-sibling::table[1]')[0]
-    return {'kcal': parse_kcal(table.xpath('.//tr[1]/td[2]/text()')[0]),
+    return {'kcal':
+            parse_kcal(table.xpath('.//tr[1]/td[2]/text()')[0]),
+            # every following xpath is identical after tr[n], but kcal
+            # must really be differen or it won't match (kJ would match, though)
             'fat': parse_g(table.xpath('.//tr[2]/td[2]//text()')[0]),
             'carbs': parse_g(table.xpath('.//tr[3]/td[2]//text()')[0]),
             'sugar': parse_g(table.xpath('.//tr[4]/td[2]//text()')[0]),
