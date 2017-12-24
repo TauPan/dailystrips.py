@@ -62,14 +62,17 @@ def url_for_day(date):
 
 
 def scrape_day(page, date):
-    calorific = ''.join(page.xpath('//td[span/b="Brennwert"]/following-sibling::td//text()'))
-    kcal_total = parse_kcal(calorific)
     foods = scrape_foods(page, date)
     day = dict(
         date=date,
-        kcal=kcal_total,
+        total=scrape_total(page),
         foods=foods)
     return day
+
+
+def scrape_total(page):
+    calorific = ''.join(page.xpath('//td[span/b="Brennwert"]/following-sibling::td//text()'))
+    return {'kcal': parse_kcal(calorific)}
 
 
 def next_day(date):
