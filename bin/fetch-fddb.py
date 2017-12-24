@@ -16,7 +16,6 @@ import lxml.html
 
 FDDBDATEPAGE = 'http://fddb.info/db/i18n/myday20/?lang=de&q={end}&p={start}'
 
-
 def main(argv):
     session = login()
     startdate = dateutil.parser.parse(argv[1])
@@ -26,24 +25,29 @@ def main(argv):
     with login() as session:
         while (date <= lastdate):
             nextdate = date + datetime.timedelta(days=1)
-            start = int(date.timestamp())
-            end = int(nextdate.timestamp())
-            url = FDDBDATEPAGE.format(
-                start=start,
-                end=end)
-            content = session.get(url).content
-            page = lxml.html.document_fromstring(content)
-            calorific = ''.join(page.xpath('//td[span/b="Brennwert"]/following-sibling::td//text()'))
-            kcal_total = int(re.search('(\d+) kcal', calorific).group(1))
-            foods = scrape_foods(page, date)
-            day = dict(
-                date=date,
-                kcal=kcal_total,
-                foods=foods)
+            day = scrape_day(date, nextdate, session)
             days.append(day)
             date = nextdate
         import pdb; pdb.set_trace()
         pass
+
+
+def scrape_day(date, nextdate, session):
+    start = int(date.timestamp())
+    end = int(nextdate.timestamp())
+    url = FDDBDATEPAGE.format(
+        start=start,
+        end=end)
+    content = session.get(url).content
+    page = lxml.html.document_fromstring(content)
+    calorific = ''.join(page.xpath('//td[span/b="Brennwert"]/following-sibling::td//text()'))
+    kcal_total = int(re.search('(\d+) kcal', calorific).group(1))
+    foods = scrape_foods(page, date)
+    day = dict(
+        date=date,
+        kcal=kcal_total,
+        foods=foods)
+    return day
 
 
 def scrape_foods(page, date):
