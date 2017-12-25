@@ -76,6 +76,12 @@ def scrape_total(page):
     def nutr(index, path='./td[2]//text()'):
         return nutr_trs[index].xpath(path)[0]
 
+    vit_trs = page.xpath(
+        '//h3[.="Vitamine"]/following-sibling::table[1]//tr')
+
+    def vit(index, path='./td[2]//text()'):
+        return vit_trs[index].xpath(path)[0]
+
     return {'kcal':
             parse_kcal(nutr(0, './/td[2]/text()')),
             # every following xpath is identical after tr[n], but kcal
@@ -88,7 +94,17 @@ def scrape_total(page):
             'water': parse_liters(nutr(6)),
             'fibre': parse_g(nutr(7)),
             'cholesterol': parse_mg(nutr(8)),
-            'BE': parse_german_float(nutr(9))}
+            'BE': parse_german_float(nutr(9)),
+            'vitamins': {
+                'C': parse_mg(vit(0)),
+                'A': parse_mg(vit(1)),
+                'D': parse_mg(vit(2)),
+                'E': parse_mg(vit(3)),
+                'B1': parse_mg(vit(4)),
+                'B2': parse_mg(vit(5)),
+                'B6': parse_mg(vit(6)),
+                'B12': parse_ug(vit(7)),
+            }}
 
 
 def next_day(date):
@@ -131,6 +147,11 @@ def parse_g(text):
 def parse_mg(text):
     return parse_german_float(re.search('([\d,]+) mg', text).group(1))
 
+def parse_ug(text):
+    return parse_german_float(re.search('([\d,]+) μg', text).group(1))
+    # character: μ (displayed as μ) (codepoint 956, #o1674, #x3bc)
+    # this is different from the µ character on my keyboard:
+    # character: µ (displayed as µ) (codepoint 181, #o265, #xb5)
 
 def parse_liters(text):
     return parse_german_float(re.search('([\d,]+) Liter', text).group(1))
