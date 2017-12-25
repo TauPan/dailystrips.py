@@ -69,20 +69,24 @@ def scrape_day(page, date):
 
 
 def scrape_total(page):
-    trs = page.xpath('//p[@id="fddb-myday-printinfo"]/following-sibling::table[1]//tr')
+    nutr_trs = page.xpath('//p[@id="fddb-myday-printinfo"]/following-sibling::table[1]//tr')
+
+    def nutr(index, path='./td[2]//text()'):
+        return nutr_trs[index].xpath(path)[0]
+
     return {'kcal':
-            parse_kcal(trs[0].xpath('.//td[2]/text()')[0]),
+            parse_kcal(nutr(0, './/td[2]/text()')),
             # every following xpath is identical after tr[n], but kcal
             # must really be different or it won't match (kJ would match, though)
-            'fat': parse_g(trs[1].xpath('./td[2]//text()')[0]),
-            'carbs': parse_g(trs[2].xpath('.//td[2]//text()')[0]),
-            'sugar': parse_g(trs[3].xpath('.//td[2]//text()')[0]),
-            'protein': parse_g(trs[4].xpath('.//td[2]//text()')[0]),
-            'alcohol': parse_g(trs[5].xpath('.//td[2]//text()')[0]),
-            'water': parse_liters(trs[6].xpath('.//td[2]//text()')[0]),
-            'fibre': parse_g(trs[7].xpath('.//td[2]//text()')[0]),
-            'cholesterol': parse_mg(trs[8].xpath('.//td[2]//text()')[0]),
-            'BE': parse_german_float(trs[9].xpath('.//td[2]//text()')[0])}
+            'fat': parse_g(nutr(1)),
+            'carbs': parse_g(nutr(2)),
+            'sugar': parse_g(nutr(3)),
+            'protein': parse_g(nutr(4)),
+            'alcohol': parse_g(nutr(5)),
+            'water': parse_liters(nutr(6)),
+            'fibre': parse_g(nutr(7)),
+            'cholesterol': parse_mg(nutr(8)),
+            'BE': parse_german_float(nutr(9))}
 
 
 def next_day(date):
