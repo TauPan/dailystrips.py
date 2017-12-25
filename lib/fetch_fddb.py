@@ -139,12 +139,13 @@ def scrape_foods(page, date):
         return dateutil.parser.parse(str, default=date)
 
     def split_food(food):
+        food_a = food.xpath('a')[0]
         return {
             'time': time_on_date(
                 food.xpath(
                     'span[@class="mydayshowtime"]/text()')[0]),
-            'link': food.xpath('a')[0].attrib['href'],
-            'text': food.xpath('a')[0].text }
+            'link': food_a.attrib['href'],
+            'text': food_a.text }
 
 
     food_rows = page.xpath('//table[@class="myday-table-std"]//tr')
