@@ -138,6 +138,15 @@ def scrape_foods(page, date):
     def time_on_date(str):
         return dateutil.parser.parse(str, default=date)
 
+    def split_food(food):
+        return {
+            'time': time_on_date(
+                food.xpath(
+                    'span[@class="mydayshowtime"]/text()')[0]),
+            'link': food.xpath('a')[0].attrib['href'],
+            'text': food.xpath('a')[0].text }
+
+
     food_rows = page.xpath('//table[@class="myday-table-std"]//tr')
     foods = []
     for row in food_rows:
@@ -147,21 +156,15 @@ def scrape_foods(page, date):
             def tot(index, path='.//text()'):
                 return tds[index].xpath(path)[0]
 
-            def split_food(food):
-                return {
-                    'time': time_on_date(
-                        food.xpath(
-                            'span[@class="mydayshowtime"]/text()')[0]),
-                    'link': food.xpath('a')[0].attrib['href'],
-                    'text': food.xpath('a')[0].text }
-
             ret = enumerate_parse_extract(
                 parse_g,
                 tot,
                 ['food', split_food, tot, '.'],
                 None,
-                ['kcal', parse_kcal], 'fat', 'carbs', 'protein')
+                ['kcal', parse_kcal],
+                'fat', 'carbs', 'protein')
             ret['time'] = ret['food']['time']
+            del ret['food']['time']
             foods.append(ret)
         except IndexError as e:
             continue
