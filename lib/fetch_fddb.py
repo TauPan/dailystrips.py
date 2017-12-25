@@ -137,28 +137,37 @@ def next_day(date):
     return date + datetime.timedelta(days=1)
 
 def scrape_foods(page, date):
+
+    def time_on_date(str):
+        return dateutil.parser.parse(str, default=date)
+
     food_rows = page.xpath('//table[@class="myday-table-std"]//tr')
     foods = []
     for row in food_rows:
-        time_el = row.xpath('td[1]/span[@class="mydayshowtime"]/text()')
-        if not time_el:
+        try:
+            tds = row.xpath('td')
+
+            def tot(index, path='.//text()'):
+                return tds[index].xpath(path)[0]
+
+            def split_food(food):
+                return {
+                    'time': time_on_date(
+                        food.xpath(
+                            'span[@class="mydayshowtime"]/text()')[0]),
+                    'link': food.xpath('a')[0].attrib['href'],
+                    'text': food.xpath('a')[0].text }
+
+            ret = enumerate_parse_extract(
+                parse_g,
+                tot,
+                ['food', split_food, tot, '.'],
+                None,
+                ['kcal', parse_kcal], 'fat', 'carbs', 'protein')
+            ret['time'] = ret['food']['time']
+            foods.append(ret)
+        except IndexError as e:
             continue
-        time = dateutil.parser.parse(time_el[0], default=date)
-        food = row.xpath('td[1]/a')[0]
-        food_link = food.attrib['href']
-        food_txt = food.text
-        kcal = parse_kcal(row.xpath('td[3]//text()')[0])
-        fat = parse_g(row.xpath('td[4]//text()')[0])
-        carbs = parse_g(row.xpath('td[5]//text()')[0])
-        protein = parse_g(row.xpath('td[6]//text()')[0])
-        foods.append(dict(
-            time=time,
-            food=dict(link=food_link,
-                      text=food_txt),
-            kcal=kcal,
-            fat=fat,
-            carbs=carbs,
-            protein=protein))
     return foods
 
 
