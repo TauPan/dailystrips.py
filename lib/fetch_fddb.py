@@ -97,33 +97,19 @@ def scrape_total(page):
         ['cholesterol', parse_mg],
         ['BE', parse_german_float]
     )
-    ret.update({
-         'vitamins': {
-             'C': parse_mg(vit(0)),
-             'A': parse_mg(vit(1)),
-             'D': parse_mg(vit(2)),
-             'E': parse_mg(vit(3)),
-             'B1': parse_mg(vit(4)),
-             'B2': parse_mg(vit(5)),
-             'B6': parse_mg(vit(6)),
-             'B12': parse_ug(vit(7)),
-         },
-         'minerals': {
-             'salt': parse_g(min(0)),
-             'iron': parse_mg(min(1)),
-             'zinc': parse_mg(min(2)),
-             'magnesium': parse_mg(min(3)),
-             'manganese': parse_mg(min(4)),
-             'fluoride': parse_mg(min(5)),
-             'chloride': parse_mg(min(6)),
-             'copper': parse_mg(min(7)),
-             'potassium': parse_mg(min(8)),
-             'calcium': parse_mg(min(9)),
-             'phosphor': parse_mg(min(10)),
-             'sulfur': parse_mg(min(11)),
-             'iodine': parse_mg(min(12)),
-         }})
 
+    ret ['vitamins'] = with_index(
+        parse_mg,
+        vit,
+        'C', 'A', 'D', 'E', 'B1', 'B2', 'B6',
+        ['B12', parse_ug])
+    ret ['minerals'] = with_index(
+        parse_mg,
+        min,
+        ['salt', parse_g],
+        'iron', 'zinc', 'magnesium', 'manganese',
+        'fluoride', 'chloride', 'copper', 'potassium',
+        'calcium', 'phosphor', 'sulfur', 'iodine')
     return ret
 
 
