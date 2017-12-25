@@ -26,7 +26,9 @@ def main(argv):  # pragma: no cover
             day = scrape_day(page, date)
             days.append(day)
             date = next_day(date)
-
+    with open('fddb-diary-dump-{}.json'.format(startdate.isoformat()),
+              'w') as f:
+        json.dump(days, f)
 
 @contextmanager
 def login():  # pragma: no cover
