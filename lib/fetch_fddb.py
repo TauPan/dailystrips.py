@@ -88,8 +88,7 @@ def scrape_total(page):
         return min_trs[index].xpath(path)[0]
 
     ret = enumerate_parse_extract(
-        parse_g,
-        nutr,
+        parse_g, nutr,
         ['kcal', parse_kcal, nutr, './/td[2]/text()'],
         'fat', 'carbs', 'sugar', 'protein', 'alcohol',
         ['water', parse_liters],
@@ -99,13 +98,11 @@ def scrape_total(page):
     )
 
     ret ['vitamins'] = enumerate_parse_extract(
-        parse_mg,
-        vit,
+        parse_mg, vit,
         'C', 'A', 'D', 'E', 'B1', 'B2', 'B6',
         ['B12', parse_ug])
     ret ['minerals'] = enumerate_parse_extract(
-        parse_mg,
-        min,
+        parse_mg, min,
         ['salt', parse_g],
         'iron', 'zinc', 'magnesium', 'manganese',
         'fluoride', 'chloride', 'copper', 'potassium',
