@@ -52,6 +52,20 @@ def test_scrape_day():
     assert vitamins['B2'] == 0.3
     assert vitamins['B6'] == 8.7
     assert vitamins['B12'] == 4.6
+    minerals = total['minerals']
+    assert minerals['salt'] == 4.0770972
+    assert minerals['iron'] == 8.8
+    assert minerals['zinc'] == 12.5
+    assert minerals['magnesium'] == 881.5
+    assert minerals['manganese'] == 0.4
+    assert minerals['fluoride'] == 0.1
+    assert minerals['chloride'] == 2981.7
+    assert minerals['copper'] == 0.2
+    assert minerals['potassium'] == 1308.9
+    assert minerals['calcium'] == 43.6
+    assert minerals['phosphor'] == 294.6
+    assert minerals['sulfur'] == 272.1
+    assert minerals['iodine'] == 0.01052
     food0 = ret['foods'][0]
     assert food0['time'] == datetime.datetime(2017, 6, 2, 23, 30)
     assert food0['food']['link'] == 'http://fddb.info/db/de/lebensmittel/brauerei_beck_becks_bier_pils/index.html'
