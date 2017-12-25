@@ -66,6 +66,7 @@ def test_scrape_day():
     assert minerals['phosphor'] == 294.6
     assert minerals['sulfur'] == 272.1
     assert minerals['iodine'] == 0.01052
+    assert len(ret['foods']) == 14
     food0 = ret['foods'][0]
     assert food0['time'] == datetime.datetime(2017, 6, 2, 23, 30)
     assert food0['food']['link'] == 'http://fddb.info/db/de/lebensmittel/brauerei_beck_becks_bier_pils/index.html'
