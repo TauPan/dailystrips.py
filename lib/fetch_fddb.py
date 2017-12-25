@@ -16,6 +16,7 @@ import lxml.html
 
 def main(argv):
     session = login()
+def main(argv):  # pragma: no cover
     startdate = dateutil.parser.parse(argv[1])
     lastdate = datetime.datetime.now()
     date = startdate
@@ -29,7 +30,7 @@ def main(argv):
 
 
 @contextmanager
-def login():
+def login():  # pragma: no cover
     loginpage = 'https://fddb.info/db/i18n/account/?lang=de&action=login'
     password_file = '~/secret/login-fddb.json'
     user_pass = {}
@@ -181,5 +182,5 @@ def parse_liters(text):
 def parse_german_float(text):
     return float(text.translate(str.maketrans(',', '.')))
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(main(sys.argv))
