@@ -41,31 +41,31 @@ def test_scrape_day():
     assert total['alcohol'] == 12.2
     assert total['water'] == 1
     assert total['fibre'] == 31.3
-    assert total['cholesterol'] == 58
+    assert total['cholesterol'] == 0.058
     assert total['BE'] == 15.8
     vitamins = total['vitamins']
-    assert vitamins['C'] == 6.3
+    assert vitamins['C'] == 0.0063
     assert vitamins['A'] == 0
     assert vitamins['D'] == 0
-    assert vitamins['E'] == 0.2
-    assert vitamins['B1'] == 0.4679
-    assert vitamins['B2'] == 0.3
-    assert vitamins['B6'] == 8.7
-    assert vitamins['B12'] == 4.6
+    assert vitamins['E'] == 0.0002
+    assert vitamins['B1'] == 0.0004679
+    assert vitamins['B2'] == 0.0003
+    assert vitamins['B6'] == 0.0087
+    assert vitamins['B12'] == 0.0000046
     minerals = total['minerals']
     assert minerals['salt'] == 4.0770972
-    assert minerals['iron'] == 8.8
-    assert minerals['zinc'] == 12.5
-    assert minerals['magnesium'] == 881.5
-    assert minerals['manganese'] == 0.4
-    assert minerals['fluoride'] == 0.1
-    assert minerals['chloride'] == 2981.7
-    assert minerals['copper'] == 0.2
-    assert minerals['potassium'] == 1308.9
-    assert minerals['calcium'] == 43.6
-    assert minerals['phosphor'] == 294.6
-    assert minerals['sulfur'] == 272.1
-    assert minerals['iodine'] == 0.01052
+    assert minerals['iron'] == 0.0088
+    assert minerals['zinc'] == 0.0125
+    assert minerals['magnesium'] == 0.8815
+    assert minerals['manganese'] == 0.0004
+    assert minerals['fluoride'] == 0.0001
+    assert minerals['chloride'] == 2.9817
+    assert minerals['potassium'] == 1.3089
+    assert minerals['copper'] == 0.0002
+    assert minerals['calcium'] == 0.0436
+    assert minerals['phosphor'] == 0.2946
+    assert minerals['sulfur'] == 0.2721
+    assert minerals['iodine'] == 0.00001052
     assert len(ret['foods']) == 14
     food0 = ret['foods'][0]
     assert food0['food']['time'] == datetime.datetime(2017, 6, 2, 23, 30)
