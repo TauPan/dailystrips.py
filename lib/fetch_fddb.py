@@ -68,7 +68,7 @@ def url_for_day(date):
 def scrape_day(page, date):
     foods = scrape_foods(page, date)
     day = dict(
-        date=date,
+        date=date.isoformat(),
         total=scrape_total(page),
         foods=foods)
     return day
@@ -147,7 +147,7 @@ def scrape_foods(page, date):
         return {
             'time': time_on_date(
                 food.xpath(
-                    'span[@class="mydayshowtime"]/text()')[0]),
+                    'span[@class="mydayshowtime"]/text()')[0]).isoformat(),
             'link': food_a.attrib['href'],
             'text': food_a.text }
 
