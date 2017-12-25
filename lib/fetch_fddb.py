@@ -23,8 +23,11 @@ def main(argv):  # pragma: no cover
         while (date <= lastdate):
             print(date.isoformat())
             page = page_for_date(date, session)
-            day = scrape_day(page, date)
-            days.append(day)
+            try:
+                day = scrape_day(page, date)
+                days.append(day)
+            except IndexError:
+                pass
             date = next_day(date)
     with open('fddb-diary-dump-{}.json'.format(startdate.isoformat()),
               'w') as f:
@@ -165,7 +168,7 @@ def scrape_foods(page, date):
                 None,
                 ['kcal', parse_kcal],
                 'fat', 'carbs', 'protein'))
-        except IndexError as e:
+        except IndexError:
             continue
     return foods
 
