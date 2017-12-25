@@ -82,6 +82,12 @@ def scrape_total(page):
     def vit(index, path='./td[2]//text()'):
         return vit_trs[index].xpath(path)[0]
 
+    min_trs = page.xpath(
+        '//h3[.="Mineralstoffe"]/following-sibling::table[1]//tr')
+
+    def min(index, path='./td[2]//text()'):
+        return min_trs[index].xpath(path)[0]
+
     return {'kcal':
             parse_kcal(nutr(0, './/td[2]/text()')),
             # every following xpath is identical after tr[n], but kcal
@@ -104,6 +110,21 @@ def scrape_total(page):
                 'B2': parse_mg(vit(5)),
                 'B6': parse_mg(vit(6)),
                 'B12': parse_ug(vit(7)),
+            },
+            'minerals': {
+                'salt': parse_g(min(0)),
+                'iron': parse_mg(min(1)),
+                'zinc': parse_mg(min(2)),
+                'magnesium': parse_mg(min(3)),
+                'manganese': parse_mg(min(4)),
+                'fluoride': parse_mg(min(5)),
+                'chloride': parse_mg(min(6)),
+                'copper': parse_mg(min(7)),
+                'potassium': parse_mg(min(8)),
+                'calcium': parse_mg(min(9)),
+                'phosphor': parse_mg(min(10)),
+                'sulfur': parse_mg(min(11)),
+                'iodine': parse_mg(min(12)),
             }}
 
 
