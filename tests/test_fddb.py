@@ -32,24 +32,26 @@ def test_scrape_day():
     date = datetime.datetime(2017, 6, 2)
     ret = fddb.scrape_day(page, date)
     assert ret['date'] == date
-    assert ret['total']['kcal'] == 1747
-    assert ret['total']['fat'] == 51.6
-    assert ret['total']['carbs'] == 189.5
-    assert ret['total']['sugar'] == 72.3
-    assert ret['total']['protein'] == 95.2
-    assert ret['total']['alcohol'] == 12.2
-    assert ret['total']['water'] == 1
-    assert ret['total']['fibre'] == 31.3
-    assert ret['total']['cholesterol'] == 58
-    assert ret['total']['BE'] == 15.8
-    assert ret['total']['vitamins']['C'] == 6.3
-    assert ret['total']['vitamins']['A'] == 0
-    assert ret['total']['vitamins']['D'] == 0
-    assert ret['total']['vitamins']['E'] == 0.2
-    assert ret['total']['vitamins']['B1'] == 0.4679
-    assert ret['total']['vitamins']['B2'] == 0.3
-    assert ret['total']['vitamins']['B6'] == 8.7
-    assert ret['total']['vitamins']['B12'] == 4.6
+    total = ret['total']
+    assert total['kcal'] == 1747
+    assert total['fat'] == 51.6
+    assert total['carbs'] == 189.5
+    assert total['sugar'] == 72.3
+    assert total['protein'] == 95.2
+    assert total['alcohol'] == 12.2
+    assert total['water'] == 1
+    assert total['fibre'] == 31.3
+    assert total['cholesterol'] == 58
+    assert total['BE'] == 15.8
+    vitamins = total['vitamins']
+    assert vitamins['C'] == 6.3
+    assert vitamins['A'] == 0
+    assert vitamins['D'] == 0
+    assert vitamins['E'] == 0.2
+    assert vitamins['B1'] == 0.4679
+    assert vitamins['B2'] == 0.3
+    assert vitamins['B6'] == 8.7
+    assert vitamins['B12'] == 4.6
     food0 = ret['foods'][0]
     assert food0['time'] == datetime.datetime(2017, 6, 2, 23, 30)
     assert food0['food']['link'] == 'http://fddb.info/db/de/lebensmittel/brauerei_beck_becks_bier_pils/index.html'
