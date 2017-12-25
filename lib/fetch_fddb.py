@@ -156,16 +156,13 @@ def scrape_foods(page, date):
             def tot(index, path='.//text()'):
                 return tds[index].xpath(path)[0]
 
-            ret = enumerate_parse_extract(
+            foods.append(enumerate_parse_extract(
                 parse_g,
                 tot,
                 ['food', split_food, tot, '.'],
                 None,
                 ['kcal', parse_kcal],
-                'fat', 'carbs', 'protein')
-            ret['time'] = ret['food']['time']
-            del ret['food']['time']
-            foods.append(ret)
+                'fat', 'carbs', 'protein'))
         except IndexError as e:
             continue
     return foods
