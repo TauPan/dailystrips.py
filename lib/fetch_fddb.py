@@ -96,18 +96,16 @@ def scrape_total(page):
         'fat', 'carbs', 'sugar', 'protein', 'alcohol',
         ['water', parse_liters],
         'fibre',
-        ['cholesterol', parse_mg],
+        'cholesterol',
         ['BE', parse_german_float]
     )
 
     ret ['vitamins'] = enumerate_parse_extract(
-        parse_mg, vit,
-        'C', 'A', 'D', 'E', 'B1', 'B2', 'B6',
-        ['B12', parse_ug])
+        parse_g, vit,
+        'C', 'A', 'D', 'E', 'B1', 'B2', 'B6', 'B12')
     ret ['minerals'] = enumerate_parse_extract(
-        parse_mg, min,
-        ['salt', parse_g],
-        'iron', 'zinc', 'magnesium', 'manganese',
+        parse_g, min,
+        'salt', 'iron', 'zinc', 'magnesium', 'manganese',
         'fluoride', 'chloride', 'copper', 'potassium',
         'calcium', 'phosphor', 'sulfur', 'iodine')
     return ret
@@ -177,17 +175,21 @@ def parse_kcal(text):
 
 
 def parse_g(text):
-    return parse_german_float(re.search('([\d,]+) g', text).group(1))
-
-
-def parse_mg(text):
-    return parse_german_float(re.search('([\d,]+) mg', text).group(1))
-
-def parse_ug(text):
-    return parse_german_float(re.search('([\d,]+) μg', text).group(1))
+    match = re.search('([\d,]+) ([mμ]?)g', text)
     # character: μ (displayed as μ) (codepoint 956, #o1674, #x3bc)
     # this is different from the µ character on my keyboard:
     # character: µ (displayed as µ) (codepoint 181, #o265, #xb5)
+    val = match.group(1)
+    mod = match.group(2)
+    div = 1.0
+    if mod:
+        divs = {
+            'm': 1000.0,
+            'μ': 1000000.0
+        }
+        div = divs[mod]
+    return parse_german_float(val) / div
+
 
 def parse_liters(text):
     return parse_german_float(re.search('([\d,]+) Liter', text).group(1))
