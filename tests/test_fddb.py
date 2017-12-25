@@ -60,10 +60,10 @@ def test_scrape_day():
     assert minerals['manganese'] == 0.0004
     assert minerals['fluoride'] == 0.0001
     assert minerals['chloride'] == 2.9817
-    assert minerals['potassium'] == 1.3089
     assert minerals['copper'] == 0.0002
+    assert minerals['potassium'] == 1.3089000000000002
     assert minerals['calcium'] == 0.0436
-    assert minerals['phosphor'] == 0.2946
+    assert minerals['phosphor'] == 0.29460000000000003
     assert minerals['sulfur'] == 0.2721
     assert minerals['iodine'] == 0.00001052
     assert len(ret['foods']) == 14
