@@ -42,6 +42,14 @@ def test_scrape_day():
     assert ret['total']['fibre'] == 31.3
     assert ret['total']['cholesterol'] == 58
     assert ret['total']['BE'] == 15.8
+    assert ret['total']['vitamins']['C'] == 6.3
+    assert ret['total']['vitamins']['A'] == 0
+    assert ret['total']['vitamins']['D'] == 0
+    assert ret['total']['vitamins']['E'] == 0.2
+    assert ret['total']['vitamins']['B1'] == 0.4679
+    assert ret['total']['vitamins']['B2'] == 0.3
+    assert ret['total']['vitamins']['B6'] == 8.7
+    assert ret['total']['vitamins']['B12'] == 4.6
     food0 = ret['foods'][0]
     assert food0['time'] == datetime.datetime(2017, 6, 2, 23, 30)
     assert food0['food']['link'] == 'http://fddb.info/db/de/lebensmittel/brauerei_beck_becks_bier_pils/index.html'
