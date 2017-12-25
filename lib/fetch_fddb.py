@@ -31,8 +31,9 @@ def main(argv):
 @contextmanager
 def login():
     loginpage = 'https://fddb.info/db/i18n/account/?lang=de&action=login'
+    password_file = '~/secret/login-fddb.json'
     user_pass = {}
-    with open(os.path.expanduser('~/secret/login-fddb.json')) as f:
+    with open(os.path.expanduser(password_file)) as f:
         user_pass = json.load(f);
     with requests.Session() as session:
         session.post(loginpage,
@@ -51,11 +52,11 @@ def page_for_date(date, session):
 
 
 def url_for_day(date):
-    fddb_date_page_format = 'http://fddb.info/db/i18n/myday20/?lang=de&q={end}&p={start}'
+    url_format = 'http://fddb.info/db/i18n/myday20/?lang=de&q={end}&p={start}'
     nextdate = next_day(date)
     start = int(date.timestamp())
     end = int(nextdate.timestamp())
-    url = fddb_date_page_format.format(start=start, end=end)
+    url = url_format.format(start=start, end=end)
     return url
 
 
@@ -69,7 +70,8 @@ def scrape_day(page, date):
 
 
 def scrape_total(page):
-    nutr_trs = page.xpath('//p[@id="fddb-myday-printinfo"]/following-sibling::table[1]//tr')
+    nutr_trs = page.xpath(
+        '//p[@id="fddb-myday-printinfo"]/following-sibling::table[1]//tr')
 
     def nutr(index, path='./td[2]//text()'):
         return nutr_trs[index].xpath(path)[0]
