@@ -14,8 +14,6 @@ import dateutil.parser
 import lxml.html
 
 
-def main(argv):
-    session = login()
 def main(argv):  # pragma: no cover
     startdate = dateutil.parser.parse(argv[1])
     lastdate = datetime.datetime.now()
