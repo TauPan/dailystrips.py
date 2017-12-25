@@ -118,6 +118,8 @@ def enumerate_parse_extract(parse_default, extract_default, *lst):
     for i, it in enumerate(lst):
         extract = extract_default
         parse = parse_default
+        if it is None:
+            continue
         if type(it) == str:
             key = it
             args = []
