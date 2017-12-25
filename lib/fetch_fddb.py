@@ -87,44 +87,62 @@ def scrape_total(page):
     def min(index, path='./td[2]//text()'):
         return min_trs[index].xpath(path)[0]
 
-    return {'kcal':
-            parse_kcal(nutr(0, './/td[2]/text()')),
-            # every following xpath is identical after tr[n], but kcal
-            # must really be different or it won't match (kJ would match, though)
-            'fat': parse_g(nutr(1)),
-            'carbs': parse_g(nutr(2)),
-            'sugar': parse_g(nutr(3)),
-            'protein': parse_g(nutr(4)),
-            'alcohol': parse_g(nutr(5)),
-            'water': parse_liters(nutr(6)),
-            'fibre': parse_g(nutr(7)),
-            'cholesterol': parse_mg(nutr(8)),
-            'BE': parse_german_float(nutr(9)),
-            'vitamins': {
-                'C': parse_mg(vit(0)),
-                'A': parse_mg(vit(1)),
-                'D': parse_mg(vit(2)),
-                'E': parse_mg(vit(3)),
-                'B1': parse_mg(vit(4)),
-                'B2': parse_mg(vit(5)),
-                'B6': parse_mg(vit(6)),
-                'B12': parse_ug(vit(7)),
-            },
-            'minerals': {
-                'salt': parse_g(min(0)),
-                'iron': parse_mg(min(1)),
-                'zinc': parse_mg(min(2)),
-                'magnesium': parse_mg(min(3)),
-                'manganese': parse_mg(min(4)),
-                'fluoride': parse_mg(min(5)),
-                'chloride': parse_mg(min(6)),
-                'copper': parse_mg(min(7)),
-                'potassium': parse_mg(min(8)),
-                'calcium': parse_mg(min(9)),
-                'phosphor': parse_mg(min(10)),
-                'sulfur': parse_mg(min(11)),
-                'iodine': parse_mg(min(12)),
-            }}
+    ret = with_index(
+        parse_g,
+        nutr,
+        ['kcal', parse_kcal, nutr, './/td[2]/text()'],
+        'fat', 'carbs', 'sugar', 'protein', 'alcohol',
+        ['water', parse_liters],
+        'fibre',
+        ['cholesterol', parse_mg],
+        ['BE', parse_german_float]
+    )
+    ret.update({
+         'vitamins': {
+             'C': parse_mg(vit(0)),
+             'A': parse_mg(vit(1)),
+             'D': parse_mg(vit(2)),
+             'E': parse_mg(vit(3)),
+             'B1': parse_mg(vit(4)),
+             'B2': parse_mg(vit(5)),
+             'B6': parse_mg(vit(6)),
+             'B12': parse_ug(vit(7)),
+         },
+         'minerals': {
+             'salt': parse_g(min(0)),
+             'iron': parse_mg(min(1)),
+             'zinc': parse_mg(min(2)),
+             'magnesium': parse_mg(min(3)),
+             'manganese': parse_mg(min(4)),
+             'fluoride': parse_mg(min(5)),
+             'chloride': parse_mg(min(6)),
+             'copper': parse_mg(min(7)),
+             'potassium': parse_mg(min(8)),
+             'calcium': parse_mg(min(9)),
+             'phosphor': parse_mg(min(10)),
+             'sulfur': parse_mg(min(11)),
+             'iodine': parse_mg(min(12)),
+         }})
+
+    return ret
+
+
+def with_index(parse_default, extract_default, *lst):
+    ret = {}
+    for i, it in enumerate(lst):
+        extract = extract_default
+        parse = parse_default
+        if type(it) == str:
+            key = it
+            args = []
+        else:
+            key, *args = it
+        if args:
+            parse = args.pop(0)
+        if args:
+            extract = args.pop(0)
+        ret[key] = parse(extract(i, *args))
+    return ret
 
 
 def next_day(date):
