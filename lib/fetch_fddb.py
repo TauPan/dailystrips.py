@@ -21,6 +21,7 @@ def main(argv):  # pragma: no cover
     days = []
     with login() as session:
         while (date <= lastdate):
+            print(date.isoformat())
             page = page_for_date(date, session)
             day = scrape_day(page, date)
             days.append(day)
