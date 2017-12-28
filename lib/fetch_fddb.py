@@ -29,7 +29,9 @@ def main(argv):  # pragma: no cover
             except IndexError:
                 pass
             date = next_day(date)
-    with open('fddb-diary-dump-{}.json'.format(startdate.isoformat()),
+    with open('fddb-diary-dump-{}..{}.json'.format(
+            startdate.isoformat(),
+            lastdate.isoformat()),
               'w') as f:
         json.dump(days, f)
 
