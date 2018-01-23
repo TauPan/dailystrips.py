@@ -5,6 +5,44 @@ import sys
 
 import dateutil.parser
 
+ORDER = [
+    'date',
+    'kcal',
+    'carbs',
+    'sugar',
+    'protein',
+    'fat',
+    'alcohol',
+    'fibre',
+    'BE',
+    'water',
+    'cholesterol',
+    'D',
+    'C',
+    'B1',
+    'A',
+    'E',
+    'B6',
+    'B12',
+    'B2',
+    'iodine',
+    'sulfur',
+    'manganese',
+    'iron',
+    'copper',
+    'chloride',
+    'salt',
+    'zinc',
+    'calcium',
+    'fluoride',
+    'potassium',
+    'phosphor',
+    'magnesium']
+
+def orderkeys(dct):
+    keys = dct.keys()
+    return [k for k in ORDER if k in keys]
+
 def main(argv):  # pragma: no cover
     infile = argv[1]
     with open(infile) as f:
@@ -17,12 +55,14 @@ def main(argv):  # pragma: no cover
     days_outfile = 'fddb-days-{}--{}.csv'.format(
         firstdate.isoformat(),
         lastdate.isoformat())
-    total_base_rows = list(days[0]['total'].keys() - ['vitamins', 'minerals'])
+    total_base_rows = orderkeys(days[0]['total'])
+    vitamins_rows = orderkeys(days[0]['total']['vitamins'])
+    minerals_rows = orderkeys(days[0]['total']['minerals'])
     total_rows = ['date'] + (
         total_base_rows
-        + list(days[0]['total']['vitamins'].keys())
-        + list(days[0]['total']['minerals'].keys()))
-    food_base_rows = list(days[0]['foods'][0].keys() - ['food'])
+        + vitamins_rows
+        + minerals_rows)
+    food_base_rows = orderkeys(days[0]['foods'][0])
     food_rows = (['time']
                  + ['food_name', 'food_link']
                  + food_base_rows)
@@ -37,8 +77,8 @@ def main(argv):  # pragma: no cover
             tc.writerow(
                 [day['date']]
                 + [total[k] for k in total_base_rows]
-                + [total['vitamins'][k] for k in total['vitamins'].keys()]
-                + [total['minerals'][k] for k in total['minerals'].keys()])
+                + [total['vitamins'][k] for k in vitamins_rows]
+                + [total['minerals'][k] for k in minerals_rows])
             for food in day['foods']:
                 dc.writerow(
                     [food['food']['time'],
