@@ -5,7 +5,7 @@
 
 import os
 import sys
-import urllib
+import urllib.request
 import lxml.html
 import re
 
@@ -20,7 +20,7 @@ def main(argv):
     starturl = "{}{}".format(
         GGDATEPAGE,
         startdate)
-    startpage = lxml.html.parse(urllib.urlopen(starturl))
+    startpage = lxml.html.parse(urllib.request.urlopen(starturl))
     lastpage = startpage.xpath("//a[@id='toplast']/@href")[0]
     lastdate = re.search("([0-9]{8})$", lastpage).group(1)
     date = startdate
@@ -36,11 +36,11 @@ def main(argv):
             "div[@id='comicrepeat']"
             "/div[@id='comicbody']/a/img/@src")[0]
         print(imageurl)
-        with open(os.path.basename(imageurl), 'w') as f:
-            f.write(urllib.urlopen(imageurl).read())
+        with open(os.path.basename(imageurl), 'wb') as f:
+            f.write(urllib.request.urlopen(imageurl).read())
         nexturl = page.xpath("//a[@id='topnext']/@href")[0]
         date = re.search("([0-9]{8})$", nexturl).group(0)
-        page = lxml.html.parse(urllib.urlopen(nexturl))
+        page = lxml.html.parse(urllib.request.urlopen(nexturl))
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
