@@ -5,7 +5,7 @@ jedi==0.8.1-final0
 lxml==3.4.4
 mccabe==0.3
 pep8==1.5.7
-pyOpenSSL==0.15.1
+pyopenssl>=17.5.0
 pyflakes==0.8.1
 python-dateutil==2.4.1
 queuelib==1.2.2
